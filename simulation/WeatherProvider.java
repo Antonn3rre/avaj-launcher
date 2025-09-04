@@ -2,7 +2,7 @@ package simulation;
 
 public final class WeatherProvider {
 
-	private String[] weather;
+	private String[] weather = {"RAIN", "FOG", "SUN", "SNOW"};
 
 	// Creation de l'instance unique
 	private static WeatherProvider instance;
@@ -19,7 +19,8 @@ public final class WeatherProvider {
 	}
 
 	public String getCurrentWeather(Coordinates p_coordinates) {
-		// TODO: jsp comment faire
-		return ("RAIN");
+
+		int index = p_coordinates.getLatitude() * p_coordinates.getHeight() - p_coordinates.getLongitude();
+		return (weather[index % 4]);
 	}
 }

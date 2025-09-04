@@ -11,8 +11,27 @@ public class JetPlane extends Aircraft implements Flyable {
 	}
 
 	public void updateConditions() {
-		// TODO: do
+
+		String weather = tower.getWeather(coordinates);
+
+		if (weather.equals("SUN")) {
+			coordinates.latitude += 10;
+			coordinates.height += 2;
+		} else if (weather.equals("RAIN")) {
+			coordinates.latitude += 5;
+		} else if (weather.equals("FOG")) {
+			coordinates.latitude += 1;
+		} else if (weather.equals("SNOW")) {
+			coordinates.height -= 7;
+		}
+		if (coordinates.height > 100)
+			coordinates.height = 100;
+		if (coordinates.height <= 0) {
+			tower.unregister(this);
+			System.out.println("Tower says: JetPlane#" + name + "(" + id + ") unregistered to weather tower." );
+		}
 	}
+
 	public void registerTower(WeatherTower p_tower) {
 		tower = p_tower;
 		tower.register(this);

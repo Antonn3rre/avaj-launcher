@@ -1,9 +1,9 @@
 package simulation;
 
 public class Coordinates {
-	int	longitude;
-	int latitude;
-	int height;
+	public int	longitude;
+	public int latitude;
+	public int height;
 
 	public Coordinates(int p_longitude, int p_latitude, int p_height) {
 		longitude = p_longitude;

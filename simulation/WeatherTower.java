@@ -4,11 +4,10 @@ package simulation;
 public class WeatherTower extends Tower {
 
 	public String getWeather(Coordinates p_coordinates) {
-		// comment faire
-		return ("RAIN");
+		return WeatherProvider.getInstance().getCurrentWeather(p_coordinates);
 	}
 
 	public void changeWeather() {
-		// change
+		// TODO: do
 	}
 }
