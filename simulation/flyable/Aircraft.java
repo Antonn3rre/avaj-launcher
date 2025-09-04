@@ -13,8 +13,7 @@ public class Aircraft {
 	protected Aircraft(long p_id, String p_name, Coordinates p_coordinate) {
 		id = p_id;
 		name = p_name;
-		coordinates = p_coordinate; // ?
-		//p_coordinate = new Coordinates(p_coordinate.longitude, p_coordinate.latitude, p_coordinate.height); // TODO: check
+		coordinates = p_coordinate;
 	}
 	
 	public String getName() {

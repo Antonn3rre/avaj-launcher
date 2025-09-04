@@ -35,25 +35,31 @@ class Main {
 			numSimulation = myReader.nextInt();
 			myReader.nextLine(); // TODO: check si rien apres  le num
 			while (myReader.hasNextLine()) {
-				Scanner data = new Scanner(myReader.nextLine());
-				String[] tab = new String[5];
-				int i = 0;
-				while (data.hasNext() && i < 5) {
-					tab[i] = data.next();
-					i++;
-				}
-				if (data.hasNext() || i != 5)
-					throw new IOException("Bad input file");
+				try(Scanner data = new Scanner(myReader.nextLine())) {
+					String[] tab = new String[5];
+					int i = 0;
+					while (data.hasNext() && i < 5) {
+						tab[i] = data.next();
+						i++;
+					}
+					if (data.hasNext() || i != 5)
+						throw new IOException("Bad input file");
 				
-				// Create new flyable
-				// Add flyable to tower
-				factory.newAircraft(tab[0], tab[1],
-					new Coordinates(Integer.parseInt(tab[2]), Integer.parseInt(tab[3]), Integer.parseInt(tab[4]))
-				).registerTower(tower);
+					// Create new flyable
+					// Add flyable to tower
+					factory.newAircraft(tab[0], tab[1],
+						new Coordinates(Integer.parseInt(tab[2]), Integer.parseInt(tab[3]), Integer.parseInt(tab[4]))
+					).registerTower(tower);
+
+					data.close();
+				} catch (IOException e) {
+					throw new IOException(e.getMessage());
+				}
 			}
 			myReader.close();
 
 		} catch (IOException e) {
+			tower.removeAllFlyables();
 			System.out.println(e.getMessage());
 			return;
 		}		
@@ -68,6 +74,7 @@ class Main {
 				return;
 			}
 		} catch (IOException e) {
+			tower.removeAllFlyables();
 			System.out.println(e.getMessage());
 			return;
 		}
@@ -76,5 +83,6 @@ class Main {
 			tower.changeWeather();
 		}
 
+		tower.removeAllFlyables();
 	}
 }

@@ -5,11 +5,9 @@ import java.util.*; // List
 
 public class Tower {
 
-	private List<Flyable> observers;
+	private List<Flyable> observers = new ArrayList<>();
 
 	public void	register(Flyable p_flyable) {
-		if (observers == null)
-			observers = new ArrayList<>();
 		observers.add(p_flyable);
 	}
 
@@ -23,5 +21,9 @@ public class Tower {
 		for (Flyable fly : new ArrayList<>(observers)) {
 			fly.updateConditions();
 		}
+	}
+
+	public	void	removeAllFlyables() {
+		observers.clear();
 	}
 }
