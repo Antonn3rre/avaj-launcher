@@ -14,6 +14,20 @@ class Main {
 			System.out.println("Wrong number of arguments");
 			return;
 		}
+		try {
+		// Open simulation.txt
+			File inFile = new File("simulation.txt");
+			
+			// If exists but not writable or cannot be created
+			if ((inFile.exists() && !inFile.canWrite()) || (!inFile.exists() && !inFile.createNewFile())) {
+				System.out.println("Error opening simulation.txt");
+				return;
+			}
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			return;
+		}
+
 
 		WeatherTower tower = new WeatherTower();
 		int numSimulation = 0;
@@ -63,21 +77,6 @@ class Main {
 			System.out.println(e.getMessage());
 			return;
 		}		
-
-		try {
-		// Open simulation.txt
-			File inFile = new File("simulation.txt");
-			
-			// If exists but not writable or cannot be created
-			if ((inFile.exists() && !inFile.canWrite()) || (!inFile.exists() && !inFile.createNewFile())) {
-				System.out.println("Error opening simulation.txt");
-				return;
-			}
-		} catch (IOException e) {
-			tower.removeAllFlyables();
-			System.out.println(e.getMessage());
-			return;
-		}
 
 		for (int i = 0; i < numSimulation; i++) {
 			tower.changeWeather();
