@@ -9,35 +9,14 @@ import java.io.IOException;
 
 class Main {
 	public static void main(String[] args) {
-	/*
-		Coordinates myCoord;
-		myCoord = new Coordinates(5,8,9);
-		int tab = myCoord.getHeight();
-		System.out.println("Height = " + tab);
 
-		if (args.length != 1) {
-			System.out.println("Wrong number of arguments\n");
-			return;
-		}
-		try {
-			File myObj = new File(args[0]);
-			Scanner myReader = new Scanner(myObj);
-			while (myReader.hasNextLine()) {
-				String data = myReader.nextLine();
-				System.out.println(data);
-			}
-			myReader.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("An error occured");
-			e.printStackTrace();
-		}
-*/
 		if (args.length != 1) {
 			System.out.println("Wrong number of arguments");
 			return;
 		}
 
 		WeatherTower tower = new WeatherTower();
+		int numSimulation = 0;
 
 		// Open argv[0], parse to create the object
 		File outFile = new File(args[0]);
@@ -53,9 +32,8 @@ class Main {
 				System.out.println("Bad input file");
 				return;
 			}
-			int num = myReader.nextInt(); // TODO: voir ou stocker
+			numSimulation = myReader.nextInt();
 			myReader.nextLine(); // TODO: check si rien apres  le num
-			System.out.println("Num: " + num);
 			while (myReader.hasNextLine()) {
 				Scanner data = new Scanner(myReader.nextLine());
 				String[] tab = new String[5];
@@ -68,10 +46,10 @@ class Main {
 					throw new IOException("Bad input file");
 				
 				// Create new flyable
+				// Add flyable to tower
 				factory.newAircraft(tab[0], tab[1],
 					new Coordinates(Integer.parseInt(tab[2]), Integer.parseInt(tab[3]), Integer.parseInt(tab[4]))
 				).registerTower(tower);
-				// Add flyable to tower
 			}
 			myReader.close();
 
@@ -92,7 +70,11 @@ class Main {
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 			return;
-		}		
+		}
+
+		for (int i = 0; i < numSimulation; i++) {
+			tower.changeWeather();
+		}
 
 	}
 }

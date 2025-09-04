@@ -28,8 +28,8 @@ public final class AircraftFactory {
 	// Create New Aircraft
 	public Flyable newAircraft(String p_type, String p_name, Coordinates p_coordinates) {
 		
-		if (p_type.equals("Baloon"))
-			return new Baloon(getNextId(), p_name, p_coordinates);
+		if (p_type.equals("Balloon"))
+			return new Balloon(getNextId(), p_name, p_coordinates);
 		if (p_type.equals("Helicopter"))
 			return new Helicopter(getNextId(), p_name, p_coordinates);
 		if (p_type.equals("JetPlane"))

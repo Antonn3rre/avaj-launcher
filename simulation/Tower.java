@@ -18,6 +18,10 @@ public class Tower {
 	}
 
 	protected void conditionChanged() {
-		// TODO: do
+
+		// Copie pour eviter les problemes quand unregister
+		for (Flyable fly : new ArrayList<>(observers)) {
+			fly.updateConditions();
+		}
 	}
 }

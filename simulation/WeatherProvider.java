@@ -20,7 +20,7 @@ public final class WeatherProvider {
 
 	public String getCurrentWeather(Coordinates p_coordinates) {
 
-		int index = p_coordinates.getLatitude() * p_coordinates.getHeight() - p_coordinates.getLongitude();
+		int index = p_coordinates.getLatitude() * p_coordinates.getHeight() + p_coordinates.getLongitude();
 		return (weather[index % 4]);
 	}
 }
