@@ -1,4 +1,4 @@
-package flyable;
+package simulation.flyable;
 
 import simulation.WeatherTower;
 

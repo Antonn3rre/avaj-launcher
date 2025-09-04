@@ -1,4 +1,4 @@
-package flyable;
+package simulation.flyable;
 
 import simulation.Coordinates;
 import simulation.WeatherTower;
@@ -17,5 +17,7 @@ public class Baloon extends Aircraft implements Flyable {
 
 	public void registerTower(WeatherTower p_tower) {
 		tower = p_tower;
+		tower.register(this);
+		System.out.println("Tower says: Balloon#" + name + "(" + id + ") registered to weather tower." );
 	}
 }
