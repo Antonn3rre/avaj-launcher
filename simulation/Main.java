@@ -107,12 +107,12 @@ public class Main {
 					while (data.hasNext() && i < 5) {
 
 						if (i >= 2 && !data.hasNextInt())
-							throw new InvalidArguments("expected line is \"[string: flyableType] [string: id] [int: longitude] [int: latitude] [int: height]\"");
+							throw new InvalidArguments();
 						tab[i] = data.next();
 						i++;
 					}
 					if (data.hasNext() || i != 5)
-						throw new InvalidArguments("expected line is \"[string: flyableType] [string: id] [int: longitude] [int: latitude] [int: height]\"");
+						throw new InvalidArguments();
 				
 					// Create new flyable and Add flyable to tower
 					factory.newAircraft(tab[0], tab[1],
