@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.util.Scanner; // Import the Scanner class to read text files
 import java.io.IOException;
 import java.lang.Throwable;
+import simulation.exceptions.*;
 
 public class Main {
 
@@ -20,13 +21,18 @@ public class Main {
 			System.out.println("Wrong number of arguments");
 			return;
 		}
-		if (openOutputFile() == 0)
-			return;
+
+		try {
+			openOutputFile();
+		} catch (OutfileError e) {
+			System.out.println(e.getMessage());
+			return ;
+		}
 
 		WeatherTower tower = new WeatherTower();
 		
 		if (parseInputFile(args[0], tower) == 0)
-			return ;
+			return;
 		
 		for (int i = 0; i < numSimulation; i++) {
 			tower.changeWeather();
@@ -36,30 +42,27 @@ public class Main {
 		tower.removeAllFlyables();
 	}
 
-	public static int	openOutputFile() {
+	public static void	openOutputFile() {
 		try {
 		// Open simulation.txt
 			File file = new File("simulation.txt");
 			
 			// If exists but not writable or cannot be created
-			if ((file.exists() && !file.canWrite()) || (!file.exists() && !file.createNewFile())) {
-				System.out.println("Error opening simulation.txt");
-				return (0);
-			}
+			if ((file.exists() && !file.canWrite()))
+				throw new OutfileError("Can't write in file");
+			if ((!file.exists() && !file.createNewFile()))
+				throw new OutfileError("Error creating simulation.txt");
 			outFile = new FileWriter(file);
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
-			return (0);
+			throw new OutfileError(e.getMessage());
 		}
-		return (1);
 	}
 
 	public static void writeToFile(String s) {
 		try {
 			outFile.write(s);
 		} catch (IOException e) {
-			System.out.println(e.getCause());
-			return;  // TODO: mettre mon exception
+			throw new OutfileError(e.getMessage());
 		}
 	}
 
@@ -68,7 +71,7 @@ public class Main {
 			outFile.close();
 			outFile = null;
 		} catch (IOException e) {
-			System.out.println(e.getCause());
+			throw new OutfileError(e.getMessage());
 		}
 	}
 
@@ -80,10 +83,8 @@ public class Main {
 
 			AircraftFactory factory = AircraftFactory.getInstance();
 
-			if (!myReader.hasNextLine()) {
-				System.out.println("The input file is empty");
-				return (0);
-			}
+			if (!myReader.hasNextLine())
+				throw new InvalidArguments("the input file is empty");
 
 			boolean first = true;
 			while (myReader.hasNextLine()) {
@@ -92,10 +93,10 @@ public class Main {
 					// If first line, get the amount of simulations
 					if (first) {
 						if (!data.hasNextInt())
-							throw new IOException("Bad input file");
+							throw new InvalidArguments("first line must be a number");
 						numSimulation = data.nextInt();
 						if (data.hasNext())
-							throw new IOException("Bad input file");
+							throw new InvalidArguments("first line must only contain a number");
 						first = false;
 						data.close();
 						continue;
@@ -106,12 +107,12 @@ public class Main {
 					while (data.hasNext() && i < 5) {
 
 						if (i >= 2 && !data.hasNextInt())
-							throw new IOException("Wrong int variable");
+							throw new InvalidArguments("expected line is \"[string: flyableType] [string: id] [int: longitude] [int: latitude] [int: height]\"");
 						tab[i] = data.next();
 						i++;
 					}
 					if (data.hasNext() || i != 5)
-						throw new IOException("Bad input file");
+						throw new InvalidArguments("expected line is \"[string: flyableType] [string: id] [int: longitude] [int: latitude] [int: height]\"");
 				
 					// Create new flyable and Add flyable to tower
 					factory.newAircraft(tab[0], tab[1],

@@ -1,7 +1,7 @@
 package simulation.flyable;
 
 import simulation.Coordinates;
-import java.io.IOException;
+import simulation.exceptions.UnknownFlyableType;
 
 public final class AircraftFactory {
 
@@ -34,6 +34,6 @@ public final class AircraftFactory {
 			return new Helicopter(getNextId(), p_name, p_coordinates);
 		if (p_type.equals("JetPlane"))
 			return new JetPlane(getNextId(), p_name, p_coordinates);
-		throw new IllegalArgumentException("Unknown aircraft type: " + p_type);
+		throw new UnknownFlyableType(p_type);
 	}
 }
