@@ -12,6 +12,7 @@ import java.lang.Throwable;
 public class Main {
 
 	private static FileWriter outFile;
+	private static int numSimulation = 0;
 
 	public static void main(String[] args) {
 
@@ -19,70 +20,20 @@ public class Main {
 			System.out.println("Wrong number of arguments");
 			return;
 		}
-
 		if (openOutputFile() == 0)
 			return;
 
 		WeatherTower tower = new WeatherTower();
-		int numSimulation = 0;
-
-		// Open argv[0], parse to create the object
-		File inFile = new File(args[0]);
-		try (Scanner myReader = new Scanner(inFile)) {
-
-			AircraftFactory factory = AircraftFactory.getInstance();
-
-			if (!myReader.hasNextLine()) {
-				System.out.println("The input file is empty");
-				return;
-			}
-			if (!myReader.hasNextInt()) {
-				System.out.println("Bad input file");
-				return;
-			}
-			numSimulation = myReader.nextInt();
-			myReader.nextLine(); // TODO: check si rien apres  le num
-			while (myReader.hasNextLine()) {
-				try(Scanner data = new Scanner(myReader.nextLine())) {
-					String[] tab = new String[5];
-					int i = 0;
-					while (data.hasNext() && i < 5) {
-
-						if (i >= 2 && !data.hasNextInt())
-							throw new IOException("Wrong int variable");
-						tab[i] = data.next();
-						i++;
-					}
-					if (data.hasNext() || i != 5)
-						throw new IOException("Bad input file");
-				
-					// Create new flyable
-					// Add flyable to tower
-					factory.newAircraft(tab[0], tab[1],
-						new Coordinates(Integer.parseInt(tab[2]), Integer.parseInt(tab[3]), Integer.parseInt(tab[4]))
-					).registerTower(tower);
-
-					data.close();
-				} catch (Throwable e) {
-					throw new IOException(e.getMessage());
-				}
-			}
-			myReader.close();
-
-		} catch (IOException e) {
-			closeOutputFile();
-			tower.removeAllFlyables();
-			System.out.println(e.getMessage());
-			return;
-		}		
-
+		
+		if (parseInputFile(args[0], tower) == 0)
+			return ;
+		
 		for (int i = 0; i < numSimulation; i++) {
 			tower.changeWeather();
 		}
-
+		
 		closeOutputFile();
 		tower.removeAllFlyables();
-
 	}
 
 	public static int	openOutputFile() {
@@ -119,6 +70,68 @@ public class Main {
 		} catch (IOException e) {
 			System.out.println(e.getCause());
 		}
+	}
+
+	private static int parseInputFile(String arg, WeatherTower tower) {
+
+		// Open argv[0], parse to create the object
+		File inFile = new File(arg);
+		try (Scanner myReader = new Scanner(inFile)) {
+
+			AircraftFactory factory = AircraftFactory.getInstance();
+
+			if (!myReader.hasNextLine()) {
+				System.out.println("The input file is empty");
+				return (0);
+			}
+
+			boolean first = true;
+			while (myReader.hasNextLine()) {
+				try (Scanner data = new Scanner(myReader.nextLine())) {
+					
+					// If first line, get the amount of simulations
+					if (first) {
+						if (!data.hasNextInt())
+							throw new IOException("Bad input file");
+						numSimulation = data.nextInt();
+						if (data.hasNext())
+							throw new IOException("Bad input file");
+						first = false;
+						data.close();
+						continue;
+					}
+
+					String[] tab = new String[5];
+					int i = 0;
+					while (data.hasNext() && i < 5) {
+
+						if (i >= 2 && !data.hasNextInt())
+							throw new IOException("Wrong int variable");
+						tab[i] = data.next();
+						i++;
+					}
+					if (data.hasNext() || i != 5)
+						throw new IOException("Bad input file");
+				
+					// Create new flyable and Add flyable to tower
+					factory.newAircraft(tab[0], tab[1],
+						new Coordinates(Integer.parseInt(tab[2]), Integer.parseInt(tab[3]), Integer.parseInt(tab[4]))
+					).registerTower(tower);
+
+					data.close();
+				} catch (Throwable e) {
+					throw new IOException(e.getMessage());
+				}
+			}
+			myReader.close();
+
+		} catch (IOException e) {
+			closeOutputFile();
+			tower.removeAllFlyables();
+			System.out.println(e.getMessage());
+			return (0);
+		}
+		return (1);
 	}
 
 }

@@ -23,7 +23,6 @@ public class Tower {
 		}
 	}
 
-	// TODO: weak reference ?
 	public	void	removeAllFlyables() {
 		observers.clear();
 	}
