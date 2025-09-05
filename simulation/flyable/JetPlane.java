@@ -2,6 +2,7 @@ package simulation.flyable;
 
 import simulation.Coordinates;
 import simulation.WeatherTower;
+import simulation.Main;
 
 public class JetPlane extends Aircraft implements Flyable {
 
@@ -17,29 +18,29 @@ public class JetPlane extends Aircraft implements Flyable {
 		if (weather.equals("SUN")) {
 			coordinates.latitude += 10;
 			coordinates.height += 2;
-			System.out.println("JetPlane#" + name + "(" + id + "): sunnyyyyyyy 💅");
+			Main.writeToFile("JetPlane#" + name + "(" + id + "): sunnyyyyyyy 💅\n");
 		} else if (weather.equals("RAIN")) {
 			coordinates.latitude += 5;
-			System.out.println("JetPlane#" + name + "(" + id + "): rainnnnnnyyyyy");
+			Main.writeToFile("JetPlane#" + name + "(" + id + "): rainnnnnnyyyyy\n");
 		} else if (weather.equals("FOG")) {
 			coordinates.latitude += 1;
-			System.out.println("JetPlane#" + name + "(" + id + "): foggggyyyyyyyyyy");
+			Main.writeToFile("JetPlane#" + name + "(" + id + "): foggggyyyyyyyyyy\n");
 		} else if (weather.equals("SNOW")) {
 			coordinates.height -= 7;
-			System.out.println("JetPlane#" + name + "(" + id + "): snooooooowwwwwyyyyyyyyyy");
+			Main.writeToFile("JetPlane#" + name + "(" + id + "): snooooooowwwwwyyyyyyyyyy\n");
 		}
 		if (coordinates.height > 100)
 			coordinates.height = 100;
 		if (coordinates.height <= 0) {
 			tower.unregister(this);
-			System.out.println("JetPlane#" + name + "(" + id + ") landing");
-			System.out.println("Tower says: JetPlane#" + name + "(" + id + ") unregistered to weather tower." );
+			Main.writeToFile("JetPlane#" + name + "(" + id + ") landing\n");
+			Main.writeToFile("Tower says: JetPlane#" + name + "(" + id + ") unregistered to weather tower.\n");
 		}
 	}
 
 	public void registerTower(WeatherTower p_tower) {
 		tower = p_tower;
 		tower.register(this);
-		System.out.println("Tower says: JetPlane#" + name + "(" + id + ") registered to weather tower." );
+		Main.writeToFile("Tower says: JetPlane#" + name + "(" + id + ") registered to weather tower.\n");
 	}
 }

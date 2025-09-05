@@ -3,38 +3,32 @@ package simulation;
 import simulation.flyable.*;
 
 import java.io.File;  // Import the File class
+import java.io.FileWriter;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.util.Scanner; // Import the Scanner class to read text files
 import java.io.IOException;
+import java.lang.Throwable;
 
-class Main {
+public class Main {
+
+	private static FileWriter outFile;
+
 	public static void main(String[] args) {
 
 		if (args.length != 1) {
 			System.out.println("Wrong number of arguments");
 			return;
 		}
-		try {
-		// Open simulation.txt
-			File inFile = new File("simulation.txt");
-			
-			// If exists but not writable or cannot be created
-			if ((inFile.exists() && !inFile.canWrite()) || (!inFile.exists() && !inFile.createNewFile())) {
-				System.out.println("Error opening simulation.txt");
-				return;
-			}
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-			return;
-		}
 
+		if (openOutputFile() == 0)
+			return;
 
 		WeatherTower tower = new WeatherTower();
 		int numSimulation = 0;
 
 		// Open argv[0], parse to create the object
-		File outFile = new File(args[0]);
-		try (Scanner myReader = new Scanner(outFile)) {
+		File inFile = new File(args[0]);
+		try (Scanner myReader = new Scanner(inFile)) {
 
 			AircraftFactory factory = AircraftFactory.getInstance();
 
@@ -53,6 +47,9 @@ class Main {
 					String[] tab = new String[5];
 					int i = 0;
 					while (data.hasNext() && i < 5) {
+
+						if (i >= 2 && !data.hasNextInt())
+							throw new IOException("Wrong int variable");
 						tab[i] = data.next();
 						i++;
 					}
@@ -66,13 +63,14 @@ class Main {
 					).registerTower(tower);
 
 					data.close();
-				} catch (IOException e) {
+				} catch (Throwable e) {
 					throw new IOException(e.getMessage());
 				}
 			}
 			myReader.close();
 
 		} catch (IOException e) {
+			closeOutputFile();
 			tower.removeAllFlyables();
 			System.out.println(e.getMessage());
 			return;
@@ -82,6 +80,45 @@ class Main {
 			tower.changeWeather();
 		}
 
+		closeOutputFile();
 		tower.removeAllFlyables();
+
 	}
+
+	public static int	openOutputFile() {
+		try {
+		// Open simulation.txt
+			File file = new File("simulation.txt");
+			
+			// If exists but not writable or cannot be created
+			if ((file.exists() && !file.canWrite()) || (!file.exists() && !file.createNewFile())) {
+				System.out.println("Error opening simulation.txt");
+				return (0);
+			}
+			outFile = new FileWriter(file);
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			return (0);
+		}
+		return (1);
+	}
+
+	public static void writeToFile(String s) {
+		try {
+			outFile.write(s);
+		} catch (IOException e) {
+			System.out.println(e.getCause());
+			return;  // TODO: mettre mon exception
+		}
+	}
+
+	public static void	closeOutputFile() {
+		try {
+			outFile.close();
+			outFile = null;
+		} catch (IOException e) {
+			System.out.println(e.getCause());
+		}
+	}
+
 }

@@ -6,6 +6,7 @@ public class Coordinates {
 	public int height;
 
 	public Coordinates(int p_longitude, int p_latitude, int p_height) {
+		// TODO: check coordinates height + 100 || < 0 and throw exception
 		longitude = p_longitude;
 		latitude = p_latitude;
 		height = p_height;
