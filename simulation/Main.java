@@ -21,6 +21,10 @@ public class Main {
 			System.out.println("Wrong number of arguments");
 			return;
 		}
+		if (args[0].equals("simulation.txt")) {
+			System.out.println("Input file can't be simulation.txt");
+			return;
+		}
 
 		try {
 			openOutputFile();
@@ -31,8 +35,14 @@ public class Main {
 
 		WeatherTower tower = new WeatherTower();
 		
+		try {
 		if (parseInputFile(args[0], tower) == 0)
 			return;
+		} catch (InvalidArguments e) {
+			System.out.println(e.getMessage());
+			return ;
+
+		}
 		
 		for (int i = 0; i < numSimulation; i++) {
 			tower.changeWeather();
